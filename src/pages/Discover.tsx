@@ -10,6 +10,8 @@ import ExploreContainer from "../components/ExploreContainer";
 import "./Discover.css";
 import BtnSearch from "../components/Discover/BtnSearch";
 import useSession from "../hooks/auth/useSession";
+import StudentCard from "../components/Discover/StudentCard";
+import GroupCard from "../components/Discover/GroupCard";
 
 function Discover() {
   const { session, nickname } = useSession();
@@ -27,7 +29,9 @@ function Discover() {
             </IonButtons>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="Discover page" />
+        <StudentCard/>
+        <GroupCard/>
+        {/* <ExploreContainer name="Discover page" /> */}
       </IonContent>
     </IonPage>
   );
