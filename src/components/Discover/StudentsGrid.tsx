@@ -1,19 +1,22 @@
-import { IonCol, IonGrid, IonText } from "@ionic/react";
+import { IonGrid, IonRow } from "@ionic/react";
 import StudentCard from "./StudentCard";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Scrollbar } from "swiper/modules";
-
 import "swiper/css";
 import "swiper/css/scrollbar";
+import useStudentSearch from "../../hooks/student/useStudentSearch";
+import { StudentType } from "../../types";
 
-export default function StudentsGrid() {
+export default function StudentsGrid(props: { students: StudentType[] }) {
   return (
-    <IonGrid className="ion-padding-vertical">
-      <Swiper modules={[Scrollbar]} scrollbar={true}>
-        <StudentCard />
-        <StudentCard />
-        <StudentCard />
-      </Swiper>
-    </IonGrid>
+    <div className="ion-padding-vertical flex overflow-x-auto overflow-scroll">
+      {props.students.map((student) => (
+        <StudentCard
+          slug={student.id + ""}
+          key={student.id}
+          studentName={student.full_name ?? ""}
+          studentDescription={student.description}
+          studentType={student.type ?? ""}
+        />
+      ))}
+    </div>
   );
 }
