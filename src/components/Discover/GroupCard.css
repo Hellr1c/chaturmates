@@ -5,8 +5,18 @@
   font-size: 50px;
 }
 
+.groupCardAvatar {
+  width: 50px;
+  height: auto;
+}
+
 .groupMemberIcon {
   font-size: x-large;
+}
+
+.groupMemberAvatar {
+  width: 25px;
+  height: auto;
 }
 
 .groupCountBadge {

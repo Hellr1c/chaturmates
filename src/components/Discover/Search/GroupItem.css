@@ -1,5 +1,10 @@
 .groupItemIcon {
-  font-size: 64px
+  font-size: 55px
+}
+
+.groupItemLogo {
+  width: 45px;
+  height: auto;
 }
 
 .groupName {

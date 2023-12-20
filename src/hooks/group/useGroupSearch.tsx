@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { GroupType } from "../../types";
 import { client } from "../../client";
 import { useAtom } from "jotai";
 import { groupsResultsAtom } from "../../atoms/search";
+import { GroupsResponse } from "../../types/group";
 
 export default function useGroupSearch() {
   const [groupsResults, setGroupsResults] = useAtom(groupsResultsAtom);
@@ -10,10 +10,13 @@ export default function useGroupSearch() {
   async function getAll() {
     const response = await client
       .from("groups")
-      .select("*")
-      .order("created_at", { ascending: false });
+      .select("*, group_members(*)")
+      .eq("admin_uni_group", false)
+      .order("created_at", { ascending: true });
     console.log("groupsResults response:", response);
-    setGroupsResults((response.data as GroupType[]) ?? []);
+    setGroupsResults(
+      response.data as GroupsResponse["getAll"]["data"]["groups"]
+    );
   }
 
   const handleGroupSearch = async (query: string) => {
@@ -24,11 +27,12 @@ export default function useGroupSearch() {
       const response = (
         await client
           .from("groups")
-          .select("*")
+          .select("*, group_members(*)")
           .ilike("name", `%${query}%`)
-          .order("created_at", { ascending: false })
+          .eq("admin_uni_group", false)
+          .order("created_at", { ascending: true })
       ).data;
-      setGroupsResults((response as GroupType[]) ?? []);
+      setGroupsResults(response as GroupsResponse["getAll"]["data"]["groups"]);
     }
   };
 

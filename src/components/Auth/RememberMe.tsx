@@ -7,17 +7,17 @@ export default function RememberMe(props: {
   forgotMyPass: () => void;
 }) {
   return (
-    <IonRow>
+    <IonRow className="pt-2">
       <IonCol size="6" className="checkbox">
         <IonCheckbox
           labelPlacement="end"
           checked={props.rememberMe}
           onClick={props.toggleRememberMe}
         />
-        <IonText className="rememberMe">Remember Me</IonText>
+        <IonText className="rememberMe font-poppins">Remember Me</IonText>
       </IonCol>
-      <IonCol size="6" className="ion-text-start" onClick={props.forgotMyPass}>
-        <IonText color="primary" className="forgotPassword cursor-pointer">Forgot Password?</IonText>
+      <IonCol size="6" className="ion-text-end" onClick={props.forgotMyPass}>
+        <IonText color="primary" className="forgotPassword font-poppins font-bold cursor-pointer">Forgot Password?</IonText>
       </IonCol>
     </IonRow>
   );

@@ -1,7 +1,7 @@
 import { IonList, IonText, useIonRouter } from "@ionic/react";
-import KlasmeytItem from "./StudentItem";
 import { StudentType } from "../../types";
 import { useState } from "react";
+import StudentItem from "./Search/StudentItem";
 
 export default function StudentsResults(props: {
   klasmeyts: StudentType[];
@@ -14,37 +14,25 @@ export default function StudentsResults(props: {
   };
 
   return (
-    <div className="ion-margin-vertical">
+    <div className="ion-margin-vertical px-0 font-poppins">
       <IonText className="pageTitle ion-margin-vertical ion-padding-start">
         Klasmeyts
       </IonText>
       <IonList>
         {showAll
           ? props.klasmeyts.map((klasmeyt, index) => (
-              <KlasmeytItem
-                key={klasmeyt.id}
-                studentId={klasmeyt.id}
-                slug={"klasmeyt-" + index}
-                studentName={klasmeyt.full_name! + ""}
-                studentType={klasmeyt.type ?? "Regular"}
-              />
+              <StudentItem student={klasmeyt} key={klasmeyt.id} />
             ))
           : props.klasmeyts
-              .slice(0, 3)
-              .map((klasmeyt, index) => (
-                <KlasmeytItem
-                  key={klasmeyt.id}
-                  studentId={klasmeyt.id}
-                  slug={"klasmeyt-" + index}
-                  studentName={klasmeyt.full_name! + ""}
-                  studentType={klasmeyt.type ?? "Regular"}
-                />
+              .slice(0, 4)
+              .map((klasmeyt) => (
+                <StudentItem student={klasmeyt} key={klasmeyt.id} />
               ))}
       </IonList>
       {props.klasmeyts.length === 0 && (
         <p className="ion-padding-start">No klasmeyts found.</p>
       )}
-      {props.klasmeyts.length > 3 && (
+      {props.klasmeyts.length > 4 && (
         <IonText
           onClick={toggleShowAll}
           color="primary"
@@ -57,11 +45,3 @@ export default function StudentsResults(props: {
     </div>
   );
 }
-
-StudentsResults.defaultProps = {
-  klasmeyts: [
-    { studentName: "Johnna Doe", studentType: "Regular" },
-    { studentName: "Johnna Doe", studentType: "Regular" },
-    { studentName: "Johnna Doe", studentType: "Regular" },
-  ],
-};

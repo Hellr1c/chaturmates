@@ -4,82 +4,102 @@ import {
   IonCard,
   IonCol,
   IonIcon,
-  IonLabel,
   IonRow,
   IonText,
   useIonRouter,
 } from "@ionic/react";
 import { peopleCircleOutline, personCircleOutline } from "ionicons/icons";
-import { ComponentProps } from "react";
 import "./GroupCard.css";
-import useGroupMembers from "../../hooks/group/useGroupMembers";
+import { GroupResponse } from "../../types/group";
 
-// TODO:  change the color of the ion card to be black
-//        for some reason it displays as gray
-type IonCardProps = ComponentProps<typeof IonCard>;
-
-export default function GroupCard(
-  props: IonCardProps & {
-    groupId: number;
-    slug: string;
-    avatar_url: string | null;
-    cover_url: string | null;
-    icon: string;
-    groupName: string;
-  }
-) {
+export default function GroupCard(props: {
+  group: GroupResponse["get"]["data"]["group"];
+  icon: string;
+}) {
   const rt = useIonRouter();
 
   function handleView() {
-    rt.push("/group/" + props.slug);
+    rt.push("/group/" + props.group.vanity_id, "forward");
   }
 
-  const { groupMembers } = useGroupMembers(props.groupId);
+  const isValidUrl = (urlString: string | URL) => {
+    try {
+      return Boolean(new URL(urlString));
+    } catch (e) {
+      return false;
+    }
+  };
 
   return (
     <IonCol size="6" className="flex flex-column w-full cursor-pointer">
       <IonCard
-        className="groupCard ion-padding ion-no-margin w-full"
+        className="groupCard ion-padding ion-no-margin w-full font-poppins"
         onClick={handleView}
       >
         <IonRow>
           <IonAvatar>
-            {props.avatar_url ? (
-              <img src={props.avatar_url} />
+            {props.group.avatar_url && isValidUrl(props.group.avatar_url) ? (
+              <img className="groupCardAvatar" src={props.group.avatar_url} />
             ) : (
               <IonIcon className="groupCardIcon" src={props.icon}></IonIcon>
             )}
           </IonAvatar>
         </IonRow>
         <IonRow className="ion-margin-vertical">
-          <IonLabel color="primary">
-            <p>{props.groupName}</p>
-          </IonLabel>
+          <IonText className="font-medium text-lg font-poppins truncate">
+            <p>{props.group.name}</p>
+          </IonText>
         </IonRow>
         <IonRow>
-          {groupMembers.length > 4 && (
+          {props.group.group_members.length > 4 && (
             <>
-              {groupMembers.slice(0, 4).map((member, index) => (
-                <IonIcon
-                  key={"ionicon:members:" + index}
-                  className="groupMemberIcon"
-                  src={personCircleOutline}
-                ></IonIcon>
-              ))}
+              {props.group.group_members.slice(0, 4).map((member, index) => {
+                if (member.students.avatar_url) {
+                  return (
+                    <IonAvatar
+                      key={"avatar:" + index}
+                      className="groupMemberAvatar"
+                    >
+                      <img src={member.students.avatar_url} />
+                    </IonAvatar>
+                  );
+                } else {
+                  return (
+                    <IonIcon
+                      key={"ionicon:members:" + index}
+                      className="groupMemberIcon"
+                      src={personCircleOutline}
+                    ></IonIcon>
+                  );
+                }
+              })}
               <IonBadge color="light" className="groupCountBadge">
-                <IonText>+ {groupMembers.length - 4}</IonText>
+                <IonText>+{props.group.group_members.length - 4}</IonText>
               </IonBadge>
             </>
           )}
-          {groupMembers.length < 4 && (
+          {props.group.group_members.length <= 4 && (
             <>
-              {groupMembers.map((member, index) => (
-                <IonIcon
-                  key={"ionicon:members:" + index}
-                  className="groupMemberIcon"
-                  src={personCircleOutline}
-                ></IonIcon>
-              ))}
+              {props.group.group_members.map((member, index) => {
+                if (member.students.avatar_url) {
+                  return (
+                    <IonAvatar
+                      key={"avatar:" + index}
+                      className="groupMemberAvatar"
+                    >
+                      <img src={member.students.avatar_url} />
+                    </IonAvatar>
+                  );
+                } else {
+                  return (
+                    <IonIcon
+                      key={"ionicon:members:" + index}
+                      className="groupMemberIcon"
+                      src={personCircleOutline}
+                    ></IonIcon>
+                  );
+                }
+              })}
             </>
           )}
         </IonRow>
@@ -89,24 +109,5 @@ export default function GroupCard(
 }
 
 GroupCard.defaultProps = {
-  slug: "software_engineering_the_best",
-  groupName: "Software Engineering The Best",
   icon: peopleCircleOutline,
-  groupMembers: [
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-    { name: "Johnna Doe", icon: personCircleOutline },
-  ],
 };

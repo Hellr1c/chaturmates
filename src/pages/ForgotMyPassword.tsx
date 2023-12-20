@@ -5,13 +5,14 @@ import {
   IonGrid,
   IonIcon,
   IonInput,
+  IonLabel,
   IonPage,
   IonRow,
   IonText,
 } from "@ionic/react";
 import TitleBar from "../components/TitleBar";
 import DontHaveAnAccount from "../components/Auth/DontHaveAnAccount";
-import { close, toggle } from "ionicons/icons";
+import { close } from "ionicons/icons";
 import { useHistory } from "react-router";
 import { useState, useEffect, useRef } from "react";
 import SignupModal from "../components/Auth/SignupModal";
@@ -49,18 +50,21 @@ export default function ForgotMyPassword() {
     };
   }, []);
 
-
   const handleForgotPass = async () => {
     // TODO: implement logic
-    const response = await client.auth.resetPasswordForEmail(session?.user.email!);
+    const response = await client.auth.resetPasswordForEmail(
+      session?.user.email!
+    );
 
-    if (response.data) {
-      console.log("response.data", response.data);
-      // if the backend returns success, then
-      // push the user to forgot my pass confirm page
-      hst.push("/forgotmypassconfirm");
+    if (response.error) {
+      return;
     }
-  }
+
+    // if the backend returns success, then
+    // push the user to forgot my pass confirm page
+    console.log("response.data", response.data);
+    hst.push("/forgotpass/confirm");
+  };
 
   return (
     <IonPage ref={page}>
@@ -69,6 +73,7 @@ export default function ForgotMyPassword() {
         <IonGrid className="ion-padding">
           <IonRow>
             <IonButton
+              className="ml-[-18px]"
               fill="clear"
               onClick={() =>
                 hst.push("/login", {
@@ -79,29 +84,35 @@ export default function ForgotMyPassword() {
               <IonIcon src={close} />
             </IonButton>
           </IonRow>
-          <IonText>
-            <h1>Oh no, I forgot!</h1>
-          </IonText>
-          <IonText>
-            <p>
-              Enter your email, or username and we'll send you a link to change
-              a new password
-            </p>
-          </IonText>
-          <IonRow>
+          <IonRow className="px-1">
+            <IonText>
+              <h1 className="text-2xl font-semibold  font-poppins">
+                Oh no, I forgot!
+              </h1>
+            </IonText>
+            <IonText className=" font-poppins">
+              <p>
+                Enter your email, or username and we'll send you a link to
+                change a new password
+              </p>
+            </IonText>
+          </IonRow>
+          <IonRow className="mt-4">
             <IonCol size="12">
-              <IonInput
-                label="Email or username"
-                labelPlacement="stacked"
-              ></IonInput>
+              <IonLabel className="my-2">
+                <IonText className=" font-poppins">Email or Username</IonText>
+              </IonLabel>
+              <IonInput className="custom my-1"></IonInput>
             </IonCol>
           </IonRow>
-          <IonRow>
+          <IonRow className="mb-4">
             <IonCol size="12">
-              <IonButton expand="block" onClick={handleForgotPass}>
-                <IonText>
-                  Forgot Password
-                </IonText>
+              <IonButton
+                expand="block"
+                onClick={handleForgotPass}
+                className="font-poppins font-bold"
+              >
+                Forgot Password
               </IonButton>
             </IonCol>
           </IonRow>

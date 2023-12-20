@@ -44,6 +44,27 @@ export interface Database {
           }
         ]
       }
+      colleges: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          title?: string
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           comment: string | null
@@ -81,30 +102,43 @@ export interface Database {
       }
       courses: {
         Row: {
+          college_id: number
           created_at: string
           description: string | null
+          full_title: string | null
           id: number
           profile_url: string | null
           school: number | null
           title: string
         }
         Insert: {
+          college_id: number
           created_at?: string
           description?: string | null
+          full_title?: string | null
           id?: number
           profile_url?: string | null
           school?: number | null
           title: string
         }
         Update: {
+          college_id?: number
           created_at?: string
           description?: string | null
+          full_title?: string | null
           id?: number
           profile_url?: string | null
           school?: number | null
           title?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "courses_college_id_fkey"
+            columns: ["college_id"]
+            isOneToOne: false
+            referencedRelation: "colleges"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "courses_school_fkey"
             columns: ["school"]
@@ -145,6 +179,65 @@ export interface Database {
             columns: ["group_id"]
             isOneToOne: false
             referencedRelation: "groups"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      group_comments: {
+        Row: {
+          content: string | null
+          created_at: string
+          id: number
+          member_id: number
+          parent_comment_id: number | null
+          post_id: number
+          student_id: number
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          id?: number
+          member_id: number
+          parent_comment_id?: number | null
+          post_id: number
+          student_id: number
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          id?: number
+          member_id?: number
+          parent_comment_id?: number | null
+          post_id?: number
+          student_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_comments_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "group_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "group_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "group_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_comments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
             referencedColumns: ["id"]
           }
         ]
@@ -219,88 +312,104 @@ export interface Database {
       }
       group_posts: {
         Row: {
-          author: number
+          content: string | null
           created_at: string
-          description: string | null
           group_id: number
           id: number
+          member_id: number
           pinned: boolean
-          title: string
+          student_id: number
+          title: string | null
         }
         Insert: {
-          author: number
+          content?: string | null
           created_at?: string
-          description?: string | null
           group_id: number
           id?: number
+          member_id: number
           pinned?: boolean
-          title: string
+          student_id: number
+          title?: string | null
         }
         Update: {
-          author?: number
+          content?: string | null
           created_at?: string
-          description?: string | null
           group_id?: number
           id?: number
+          member_id?: number
           pinned?: boolean
-          title?: string
+          student_id?: number
+          title?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "group_posts_author_fkey"
-            columns: ["author"]
-            isOneToOne: false
-            referencedRelation: "students"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "group_posts_group_id_fkey"
             columns: ["group_id"]
             isOneToOne: false
             referencedRelation: "groups"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_posts_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "group_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_posts_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
           }
         ]
       }
       groups: {
         Row: {
-          academic_year_id: number
+          academic_year_id: number | null
+          admin_uni_group: boolean
           avatar_url: string | null
-          course: number
+          college: number | null
+          course: number | null
           cover_url: string | null
           created_at: string
           description: string | null
           id: number
           name: string
           school: number
-          semester: number
-          vanity_url: string
+          semester: number | null
+          vanity_id: string
         }
         Insert: {
-          academic_year_id: number
+          academic_year_id?: number | null
+          admin_uni_group?: boolean
           avatar_url?: string | null
-          course: number
+          college?: number | null
+          course?: number | null
           cover_url?: string | null
           created_at?: string
           description?: string | null
           id?: number
           name: string
           school: number
-          semester: number
-          vanity_url: string
+          semester?: number | null
+          vanity_id: string
         }
         Update: {
-          academic_year_id?: number
+          academic_year_id?: number | null
+          admin_uni_group?: boolean
           avatar_url?: string | null
-          course?: number
+          college?: number | null
+          course?: number | null
           cover_url?: string | null
           created_at?: string
           description?: string | null
           id?: number
           name?: string
           school?: number
-          semester?: number
-          vanity_url?: string
+          semester?: number | null
+          vanity_id?: string
         }
         Relationships: [
           {
@@ -308,6 +417,13 @@ export interface Database {
             columns: ["academic_year_id"]
             isOneToOne: false
             referencedRelation: "academic_years"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "groups_college_fkey"
+            columns: ["college"]
+            isOneToOne: false
+            referencedRelation: "colleges"
             referencedColumns: ["id"]
           },
           {
@@ -942,3 +1058,83 @@ export interface Database {
     }
   }
 }
+
+export type Tables<
+  PublicTableNameOrOptions extends
+    | keyof (Database["public"]["Tables"] & Database["public"]["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
+      Database["public"]["Views"])
+  ? (Database["public"]["Tables"] &
+      Database["public"]["Views"])[PublicTableNameOrOptions] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : never
+
+export type TablesInsert<
+  PublicTableNameOrOptions extends
+    | keyof Database["public"]["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
+  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : never
+
+export type TablesUpdate<
+  PublicTableNameOrOptions extends
+    | keyof Database["public"]["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
+  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : never
+
+export type Enums<
+  PublicEnumNameOrOptions extends
+    | keyof Database["public"]["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+    : never = never
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
+  ? Database["public"]["Enums"][PublicEnumNameOrOptions]
+  : never
